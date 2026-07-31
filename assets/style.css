@@ -1,0 +1,575 @@
+/* ===================================================
+   GOOGLE FONT
+=================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+/* ===================================================
+   COLOR PALETTE
+=================================================== */
+
+:root{
+
+--primary:#1296DB;
+--secondary:#00A9CE;
+
+--yellow:#FFD600;
+
+--orange:#FF8F00;
+
+--green:#25B65B;
+
+--red:#E53935;
+
+--navy:#1B2A49;
+
+--light:#F7FAFC;
+
+--card:#FFFFFF;
+
+--border:#E8EEF5;
+
+--text:#243447;
+
+--text2:#6B7280;
+
+}
+
+
+/* ===================================================
+   GLOBAL
+=================================================== */
+
+html,
+body{
+
+font-family:'Poppins',sans-serif;
+
+
+
+}
+
+/* ===================================================
+   STREAMLIT
+=================================================== */
+
+.stApp{
+
+background:#F7FAFC !important;
+
+color:#243447 !important;
+
+}
+.main{
+
+background:#F7FAFC !important;
+
+}
+
+.block-container{
+
+background:#F7FAFC !important;
+
+padding-top:2rem;
+
+padding-left:2rem;
+
+padding-right:2rem;
+
+}
+
+
+/* ===================================================
+   HIDE STREAMLIT
+=================================================== */
+
+#MainMenu{
+
+visibility:hidden;
+
+}
+
+footer{
+
+visibility:hidden;
+
+}
+
+header{
+
+visibility:hidden;
+
+}
+/* ===================================================
+   GLOBAL
+=================================================== */
+
+html,
+body{
+
+background:#F5F7FA !important;
+
+color:#243447;
+
+font-family:'Poppins',sans-serif;
+
+}
+.card{
+
+background:white;
+
+padding:30px;
+
+border-radius:25px;
+
+text-align:center;
+
+border-top:7px solid #1296DB;
+
+box-shadow:0 10px 25px rgba(0,0,0,.06);
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 15px 35px rgba(0,0,0,.10);
+
+}
+.badge{
+
+background:#25B65B;
+
+color:white;
+
+font-weight:700;
+
+padding:8px 20px;
+
+border-radius:40px;
+
+}
+.subtitle{
+
+color:#5F6C7B;
+
+font-size:21px;
+
+}
+.hero{
+
+background:
+linear-gradient(
+135deg,
+#1296DB 0%,
+#00A9CE 50%,
+#25B65B 100%
+);
+
+padding:45px;
+
+border-radius:30px;
+
+box-shadow:0 18px 40px rgba(18,150,219,.20);
+
+}
+.hero h1{
+
+font-size:56px;
+
+font-weight:800;
+
+color:white;
+
+margin-bottom:15px;
+
+}
+.hero p{
+
+font-size:22px;
+
+color:white;
+
+opacity:.95;
+
+}
+.hero h2{
+
+margin-top:35px;
+
+font-size:42px;
+
+font-weight:700;
+
+color:#FFD600;
+
+}
+.card h2{
+
+color:#1B2A49;
+
+font-size:48px;
+
+font-weight:800;
+
+}
+div[data-testid="metric-container"]{
+
+background:white;
+
+border-radius:20px;
+
+padding:18px;
+
+border-left:6px solid #25B65B;
+
+box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+}
+.stButton>button{
+
+background:linear-gradient(
+90deg,
+#1296DB,
+#00A9CE
+);
+
+color:white;
+
+border:none;
+
+border-radius:15px;
+
+font-weight:700;
+
+height:52px;
+
+transition:.3s;
+
+}
+
+.stButton>button:hover{
+
+background:#FFD600;
+
+color:#1B2A49;
+
+transform:translateY(-2px);
+
+}
+[data-testid="stDataFrame"]{
+
+border-radius:20px;
+
+overflow:hidden;
+
+border:1px solid #DCE4EC;
+
+box-shadow:0 8px 20px rgba(0,0,0,.05);
+
+}
+h1,h2,h3,h4,h5,h6{
+
+color:#1B2A49;
+
+}
+
+label{
+
+color:#243447;
+
+font-weight:600;
+
+}
+
+p{
+
+color:#5F6C7B;
+
+}
+.header-card{
+
+background:#FFFFFF;
+
+padding:35px;
+
+border-radius:25px;
+
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+border:1px solid #E5E7EB;
+
+margin-bottom:30px;
+
+}
+.app-title{
+
+font-size:42px;
+
+font-weight:800;
+
+color:#35569B;
+
+}
+.online{
+
+background:#22C55E;
+
+color:white;
+
+padding:12px 28px;
+
+border-radius:50px;
+
+font-weight:700;
+
+font-size:16px;
+
+}
+.menu-card{
+
+background:white;
+
+padding:30px;
+
+border-radius:20px;
+
+text-align:center;
+
+border:1px solid #E8EEF5;
+
+transition:.3s;
+
+box-shadow:0 6px 20px rgba(0,0,0,.05);
+
+margin-bottom:15px;
+
+}
+
+.menu-card:hover{
+
+transform:translateY(-8px);
+
+box-shadow:0 15px 35px rgba(18,150,219,.20);
+
+}
+[data-testid="stDataFrame"]{
+
+background:white;
+
+border-radius:20px;
+
+padding:10px;
+
+}
+/* ===========================================
+       🎨 KARTU STATISTIK FULL COLOR (STYLE TOTAL INSPEKSI)
+       =========================================== */
+    .metric-card-full {
+        border-radius: 16px;
+        padding: 22px 24px;
+        color: #FFFFFF !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        margin-bottom: 15px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .metric-card-full:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Header (Ikon + Judul) */
+    .metric-card-title {
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: rgba(255, 255, 255, 0.9) !important;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Angka Utama + Satuan */
+    .metric-card-value-container {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin: 10px 0;
+    }
+
+    .metric-card-value {
+        font-size: 38px;
+        font-weight: 900;
+        line-height: 1;
+        color: #FFFFFF !important;
+    }
+
+    .metric-card-unit {
+        font-size: 15px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.85) !important;
+    }
+
+    /* Subtitle / Status bawah */
+    .metric-card-sub {
+        font-size: 11.5px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    /* 🌈 PALET WARNA BERBEDA UNTUK TIAP KARTU */
+    /* 1. OnePost: Hijau Emerald */
+    .bg-card-green {
+        background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+    }
+    /* 2. PHB TR: Oranye Amber */
+    .bg-card-orange {
+        background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%) !important;
+    }
+    /* 3. PMCB: Ungu Deep / Violet */
+    .bg-card-purple {
+        background: linear-gradient(135deg, #6D28D9 0%, #8B5CF6 100%) !important;
+    }
+    /* 4. Total Inspeksi: Biru Ocean (Seperti Gambar Referensi) */
+    .bg-card-blue {
+        background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+    }
+    /* ===========================
+   HEADER CARD
+=========================== */
+.header-card{
+    background:
+    linear-gradient(120deg,#0F172A 0%,#1E40AF 45%,#2563EB 100%);
+    color:white;
+
+    border-radius:24px;
+    padding:28px;
+    margin-bottom:20px;
+    box-shadow:0 12px 30px rgba(37,99,235,.30);
+
+    display:flex;
+    align-items:center;
+    gap:22px;
+}
+
+.header-title{
+    color:white;
+    font-size:38px;
+    font-weight:800;
+}
+
+.header-subtitle{
+    color:#E2E8F0;
+    font-size:18px;
+}
+
+.header-icon{
+    width:76px;
+    height:76px;
+    border-radius:18px;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(8px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:36px;
+}
+/* ===========================
+   DASHBOARD HERO CARD
+=========================== */
+
+.dashboard-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:30px 36px;
+    margin-bottom:28px;
+
+    background:linear-gradient(
+        135deg,
+        #FFFDF2 0%,
+        #FFF8D8 70%,
+        #FFF4A8 100%
+    );
+
+    border:1px solid #EAE83A;
+    border-radius:18px;
+
+    box-shadow:0 8px 20px rgba(15,23,42,.08);
+}
+
+.dashboard-header-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.dashboard-icon{
+    width:72px;
+    height:72px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:linear-gradient(135deg,#1B5E6E,#14A8BE);
+
+    color:white;
+
+    border-radius:18px;
+
+    font-size:34px;
+
+    box-shadow:0 8px 18px rgba(20,168,190,.35);
+}
+
+.dashboard-title{
+    font-size:38px;
+    font-weight:900;
+    color:#1E293B;
+    line-height:1.15;
+}
+
+.dashboard-subtitle{
+    margin-top:6px;
+    color:#64748B;
+    font-size:17px;
+    font-weight:500;
+}
+
+.dashboard-status{
+
+    text-align:right;
+
+    background:white;
+
+    border-radius:14px;
+
+    padding:14px 20px;
+
+    border:1px solid #E2E8F0;
+}
+
+.dashboard-status-title{
+    font-size:12px;
+    color:#64748B;
+    text-transform:uppercase;
+    font-weight:700;
+}
+
+.dashboard-status-value{
+    font-size:18px;
+    font-weight:800;
+    color:#16A34A;
+}
