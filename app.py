@@ -32,16 +32,14 @@ from database import (
     simpan_onepost_log,
     ambil_onepost_by_mode,
     ambil_onepost_by_sn,
-    ambil_semua_onepost,
+   
     simpan_phbtr,
     ambil_phbtr,
     simpan_phbtr_draft,      
     ambil_semua_phbtr_draft,
     simpan_pmcb,
     ambil_pmcb,
-    total_onepost,
-    total_phbtr,
-    total_pmcb
+  
 )
 from utils import (
     convert_df_to_excel,
