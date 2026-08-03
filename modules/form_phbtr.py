@@ -24,6 +24,7 @@ from modules.unit_manager import (
     get_active_serial,
     get_active_unit_state,
     autosave_unit,
+    delete_unit,
     render_history_panel,
     get_all_units_for_export,
 )
@@ -65,7 +66,7 @@ def form_phbtr():
 
     init_units("phbtr")
 
-    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11 = st.tabs([
         "📋 Informasi",
         "👀 Visual",
         "🗄 Selungkup",
@@ -75,6 +76,7 @@ def form_phbtr():
         "⚙ Operasi",
         "⚡ Dielektrik",
         "🛡 Sirkit",
+        "📷 Lampiran",
         "📊 Summary"
     ])
 
@@ -147,11 +149,28 @@ def form_phbtr():
             }, tab_name="Informasi")
 
         thin_divider()
-        col1, col2 = st.columns(2)
-        with col1:
-            st.button("💾 Simpan Draft", key="simpan_phbtr", use_container_width=True)
-        with col2:
-            st.button("➡ Lanjut ke Visual", key="lanjut_phbtr", use_container_width=True)
+        if active_serial:
+            with st.expander("🗑️ Hapus Project "):
+                st.warning(
+                    f"Ini akan menghapus permanen semua data project **{active_serial}** "
+                    "(seluruh tab yang sudah diisi, termasuk foto lampiran). "
+                    "Tindakan ini tidak bisa dibatalkan."
+                )
+                confirm_delete = st.checkbox(
+                    f"Saya yakin ingin menghapus project '{active_serial}' secara permanen",
+                    key=f"confirm_delete_phbtr_{active_serial}",
+                )
+                if st.button(
+                    "🗑️ Hapus Sekarang",
+                    key=f"hapus_btn_phbtr_{active_serial}",
+                    type="primary",
+                    disabled=not confirm_delete,
+                    use_container_width=True,
+                ):
+                    delete_unit("phbtr", active_serial)
+                    st.success(f"Project '{active_serial}' telah dihapus.")
+                    st.rerun()
+        st.button("➡ Lanjut ke Visual", key="lanjut_phbtr", use_container_width=True)
         card_end()
 
     # ==========================================================
@@ -499,7 +518,7 @@ def form_phbtr():
         st.session_state["dimensi_phbtr"] = dimensi_dict
         autosave_unit("phbtr", "dimensi_phbtr", dimensi_dict, tab_name="Dimensi")
 
-  # ==========================================================
+    # ==========================================================
     # TAB 7 - UJI OPERASI MEKANIS
     # ==========================================================
     with tab7:
@@ -531,7 +550,6 @@ def form_phbtr():
                 with c2:
                     row_label(item)
                 with c3:
-                    # Ditambahkan value=True agar default nilainya tercentang/aktif
                     cek = st.checkbox("", value=True, key=f"cek_{item}")
                 with c4:
                     if cek:
@@ -684,9 +702,86 @@ def form_phbtr():
         autosave_unit("phbtr", "sirkit_protektif_phbtr", hasil_sirkit, tab_name="Sirkit")
 
     # ==========================================================
-    # TAB 10 - SUMMARY PHBTR
+    # TAB 10 - LAMPIRAN DOKUMENTASI
     # ==========================================================
     with tab10:
+        card_begin()
+        section_tag("Lampiran")
+        st.markdown(
+            '<div class="siak-card-title"><i class="bi bi-camera"></i> '
+            "Lampiran Dokumentasi</div>",
+            unsafe_allow_html=True,
+        )
+        st.caption("Upload foto dokumentasi panel sesuai Blanko Uji Rutin PHBTR")
+
+        info_state = get_active_unit_state("phbtr") or {}
+        jenis_panel_lampiran = info_state.get("info", {}).get("jenis_panel", "PHBTR PASANGAN LUAR")
+        nomor_seri_lampiran = st.session_state.get("nomor_seri", info_state.get("info", {}).get("nomor_seri", ""))
+
+        c1, c2 = st.columns(2)
+        with c1:
+            st.text_input("Jenis Panel", value=jenis_panel_lampiran, disabled=True, key="lampiran_jenis_panel_display")
+        with c2:
+            st.text_input("Nomor Seri", value=nomor_seri_lampiran, disabled=True, key="lampiran_nomor_seri_display")
+        thin_divider()
+
+        # Foto yang sudah tersimpan sebelumnya untuk unit ini (dari autosave)
+        existing_lampiran = (info_state.get("lampiran_phbtr") or {}).get("foto", [])
+        existing_valid = [f for f in existing_lampiran if f.get("path") and Path(f["path"]).exists()]
+
+        if existing_valid:
+            st.markdown(f"**{len(existing_valid)} foto tersimpan sebelumnya**")
+            cols_e = st.columns(3)
+            for i, f in enumerate(existing_valid):
+                with cols_e[i % 3]:
+                    st.image(f["path"], use_container_width=True, caption=f.get("keterangan", f.get("file_name", "")))
+            thin_divider()
+
+        uploaded_files = st.file_uploader(
+            "Upload Foto Dokumentasi baru (papan nama, label bahaya listrik, kondisi panel, dsb.)",
+            type=["png", "jpg", "jpeg"],
+            accept_multiple_files=True,
+            key="lampiran_upload_phbtr",
+        )
+        new_lampiran = []
+        if uploaded_files:
+            unit_dir = BASE_DIR / "uploads" / "phbtr" / (nomor_seri_lampiran or "tanpa_nomor_seri")
+            unit_dir.mkdir(parents=True, exist_ok=True)
+            st.markdown(f"**{len(uploaded_files)} foto baru diunggah**")
+            thin_divider()
+            cols = st.columns(3)
+            for i, file in enumerate(uploaded_files):
+                with cols[i % 3]:
+                    st.image(file, use_container_width=True)
+                    keterangan = st.text_input("Keterangan", value=file.name, key=f"lampiran_keterangan_phbtr_{i}")
+                save_path = unit_dir / file.name
+                with open(save_path, "wb") as out_f:
+                    file.seek(0)
+                    out_f.write(file.getbuffer())
+                new_lampiran.append({"file_name": file.name, "keterangan": keterangan, "path": str(save_path)})
+
+        # Gabungkan foto lama + foto baru (nama file sama akan ditimpa versi terbaru)
+        merged = {f["file_name"]: f for f in existing_valid}
+        for f in new_lampiran:
+            merged[f["file_name"]] = f
+        hasil_lampiran = list(merged.values())
+
+        if not hasil_lampiran:
+            st.info("Belum ada foto yang diunggah")
+
+        st.session_state["lampiran_phbtr"] = {
+            "nama_produk": jenis_panel_lampiran,
+            "nomor_seri": nomor_seri_lampiran,
+            "foto": hasil_lampiran,
+        }
+        if get_active_serial("phbtr"):
+            autosave_unit("phbtr", "lampiran_phbtr", st.session_state["lampiran_phbtr"], tab_name="Lampiran")
+        card_end()
+
+    # ==========================================================
+    # TAB 11 - SUMMARY PHBTR
+    # ==========================================================
+    with tab11:
         card_begin()
         section_tag("Summary")
         st.markdown(
@@ -787,4 +882,3 @@ def form_phbtr():
         thin_divider()
         render_history_panel("phbtr")
         card_end()
-        

@@ -1,0 +1,275 @@
+{
+  "4": {
+    "info": {
+      "no_amp": "26147301",
+      "no_produk": "2026-",
+      "ratio_ct": "15/5-5 A",
+      "ratio_vt": "20 / √3 kV : 100 / √3 100/ √3 V",
+      "serial_vcb": "4",
+      "merk_vcb": "SUSOL",
+      "type_vcb": "SVL-20R25C13",
+      "arus_pengenal": "1250 A",
+      "tanggal": "2026-08-03",
+      "inspector": ""
+    },
+    "_meta": {
+      "last_updated": "2026-08-03 11:26:57",
+      "last_tab": "Catatan"
+    },
+    "tahanan_kontak_pmcb": [
+      {
+        "phasa": "R",
+        "nilai": 20.8,
+        "status": "Accepted"
+      },
+      {
+        "phasa": "S",
+        "nilai": 21.1,
+        "status": "Accepted"
+      },
+      {
+        "phasa": "T",
+        "nilai": 21.5,
+        "status": "Accepted"
+      }
+    ],
+    "keserempakan_pmcb": [
+      {
+        "phasa": "R",
+        "open_time": 13.7,
+        "open_result": "Accepted",
+        "close_time": 43.8,
+        "close_result": "Accepted"
+      },
+      {
+        "phasa": "S",
+        "open_time": 13.5,
+        "open_result": "Accepted",
+        "close_time": 43.9,
+        "close_result": "Accepted"
+      },
+      {
+        "phasa": "T",
+        "open_time": 13.7,
+        "open_result": "Accepted",
+        "close_time": 43.75,
+        "close_result": "Accepted"
+      }
+    ],
+    "relai_pengaman_pmcb": [
+      {
+        "item": "OCR INS",
+        "status": "Accepted"
+      },
+      {
+        "item": "OCR",
+        "status": "Accepted"
+      },
+      {
+        "item": "GFR INS",
+        "status": "Accepted"
+      },
+      {
+        "item": "GFR",
+        "status": "Accepted"
+      },
+      {
+        "item": "THERMIC",
+        "status": "Accepted"
+      }
+    ],
+    "tahanan_isolasi_pmcb": [
+      {
+        "phasa": "IN-OUT + Body",
+        "posisi_pmt": "Open",
+        "hasil_megger": "∞",
+        "status": "Accepted"
+      },
+      {
+        "phasa": "R - S + T + Body",
+        "posisi_pmt": "Close",
+        "hasil_megger": "∞",
+        "status": "Accepted"
+      },
+      {
+        "phasa": "S - R + T + Body",
+        "posisi_pmt": "Close",
+        "hasil_megger": "∞",
+        "status": "Accepted"
+      },
+      {
+        "phasa": "T - R + S + Body",
+        "posisi_pmt": "Close",
+        "hasil_megger": "∞",
+        "status": "Accepted"
+      }
+    ],
+    "uji_hv_pmcb": [
+      {
+        "phasa": "IN - OUT + Body",
+        "posisi_pmt": "Close",
+        "status": "Accepted"
+      },
+      {
+        "phasa": "IN + OUT - Body",
+        "posisi_pmt": "Close",
+        "status": "Accepted"
+      },
+      {
+        "phasa": "R - S + T + Body",
+        "posisi_pmt": "Close",
+        "status": "Accepted"
+      },
+      {
+        "phasa": "S - R + T + Body",
+        "posisi_pmt": "Close",
+        "status": "Accepted"
+      },
+      {
+        "phasa": "T - R + S + Body",
+        "posisi_pmt": "Close",
+        "status": "Accepted"
+      }
+    ],
+    "catatan_pengesahan_pmcb": {
+      "hasil_pengujian": "diterima",
+      "catatan": "",
+      "diperiksa_oleh": ""
+    },
+    "tes_fungsi_pmcb": [
+      {
+        "item": "Test Fungsi Wiring",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Test Fungsi VCB",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Test Fungsi Selector Switch",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Test Fungsi Push Button Close",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Test Fungsi Push Button Open",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Lampu indikator Alarm",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Lampu Indikator Tegangan R, S, T",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Heater",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Battery",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Test fungsi Relai Indikator box open",
+        "status": "Accepted",
+        "keterangan": ""
+      },
+      {
+        "item": "Uji CT VT",
+        "status": "Accepted",
+        "keterangan": "Hasil Terlampir"
+      }
+    ],
+    "ketebalan_coating_pmcb": [
+      {
+        "posisi": "Depan",
+        "nilai": 137.0,
+        "status": "Accepted"
+      },
+      {
+        "posisi": "Atas",
+        "nilai": 117.0,
+        "status": "Accepted"
+      },
+      {
+        "posisi": "Kiri",
+        "nilai": 137.0,
+        "status": "Accepted"
+      },
+      {
+        "posisi": "Kanan",
+        "nilai": 135.0,
+        "status": "Accepted"
+      },
+      {
+        "posisi": "Belakang",
+        "nilai": 125.0,
+        "status": "Accepted"
+      }
+    ],
+    "uji_ip55_pmcb": [
+      {
+        "item": "Pintu 1 / Depan (Engsel, Sealant, Kunci, Baut)",
+        "status": "Accepted"
+      },
+      {
+        "item": "Pintu 2 / Belakang (Engsel, Sealant, Kunci, Baut)",
+        "status": "Accepted"
+      },
+      {
+        "item": "Pintu 3 / Kanan (Engsel, Sealant, Kunci, Baut)",
+        "status": "Accepted"
+      },
+      {
+        "item": "Pintu 4 / Kiri (Engsel, Shield, Kunci, Baut)",
+        "status": "Accepted"
+      },
+      {
+        "item": "Lubang incoming R",
+        "status": "Accepted"
+      },
+      {
+        "item": "Lubang incoming S",
+        "status": "Accepted"
+      },
+      {
+        "item": "Lubang incoming T",
+        "status": "Accepted"
+      },
+      {
+        "item": "Lubang outgoing R",
+        "status": "Accepted"
+      },
+      {
+        "item": "Lubang outgoing S",
+        "status": "Accepted"
+      },
+      {
+        "item": "Lubang outgoing T",
+        "status": "Accepted"
+      },
+      {
+        "item": "Pintu / Depan (engsel, Sealant, kunci)",
+        "status": "Accepted"
+      }
+    ],
+    "lampiran_pmcb": {
+      "nama_produk": "PMCB 4.0 — SUSOL SVL-20R25C13",
+      "nomor_seri": "4",
+      "foto": []
+    }
+  }
+}

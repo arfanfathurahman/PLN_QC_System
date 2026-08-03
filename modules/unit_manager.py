@@ -1,307 +1,315 @@
 """
-Multi-unit manager + full history autosave untuk form QC.
+modules/unit_manager.py
+========================
+Persistensi lokal untuk data per-unit (per nomor seri) pada form QC.
 
-Fitur:
-  - Pengujian lebih dari 1 unit per form (list serial number)
-  - Pilih unit aktif untuk diedit
-  - Autosave: setiap perubahan widget tersimpan ke history
-  - History lengkap: siapa, kapan, apa yang berubah
-  - Fleksibel: bisa pindah-pindah unit tanpa kehilangan data
+MASALAH YANG DISELESAIKAN:
+st.session_state hanya hidup selama proses Streamlit berjalan. Begitu
+app ditutup / server direstart / di-redeploy, semua isi session_state
+hilang. File ini menambahkan lapisan penyimpanan ke disk supaya progres
+setiap unit tetap ada walau Streamlit-nya mati.
 
-Cara pakai di form:
-    from modules.unit_manager import init_units, render_unit_selector, \
-        get_active_unit_state, autosave_unit, render_history_panel
+DESAIN:
+- Satu file JSON per jenis form: data/<form_type>_units.json
+  contoh: data/onepost_units.json, data/phbtr_units.json, data/pmcb_units.json
+- Struktur file:
+    {
+      "<nomor_seri>": {
+          "info": {...},
+          "visual_onepost": [...],
+          "...": ...,
+          "_meta": {"last_updated": "...", "last_tab": "..."}
+      },
+      ...
+    }
+- session_state dipakai sebagai CACHE di memori (supaya tidak baca file
+  berulang setiap rerun Streamlit), tapi setiap autosave_unit() langsung
+  ditulis ke disk (atomic write) — jadi walau app tiba-tiba ditutup,
+  data yang sempat ter-autosave sebelumnya tetap aman.
 
-    # di Informasi tab:
-    init_units("onepost")           # siapkan state
-    render_unit_selector("onepost") # UI pilih unit
-    unit = get_active_unit_state("onepost")  # ambil data unit aktif
+CATATAN PENTING SOAL FOTO:
+Jangan simpan bytes foto ke JSON ini (lambat & file jadi raksasa).
+Pola yang benar sudah dipakai di tab Lampiran form_onepost.py: foto
+disimpan sebagai file terpisah di folder uploads/..., dan yang masuk
+ke sini hanya path-nya (string). Untuk PHBTR/PMCB, terapkan pola yang
+sama (simpan ke uploads/<form_type>/<nomor_seri>/nama_file, lalu
+autosave_unit(..., {"foto": [{"path": ..., "keterangan": ...}]})).
 
-    # di tiap tab pemeriksaan, setelah user isi:
-    autosave_unit("onepost", "visual_onepost", hasil_visual)
-
-    # di Summary tab:
-    render_history_panel("onepost")
+BATASAN:
+Cocok untuk pemakaian lokal / single-operator (satu orang menjalankan
+Streamlit di komputernya sendiri). Kalau nanti dipakai banyak orang
+sekaligus mengakses instance yang sama, tulis-menulis file JSON ini
+bisa tabrakan (race condition) — saat itu sebaiknya pindah ke SQLite
+atau database beneran. Untuk kebutuhan sekarang (progres tidak hilang
+saat app ditutup), pendekatan file JSON ini sudah cukup.
 """
 
+from __future__ import annotations
+
 import json
-import sqlite3
+import os
+import shutil
+import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
+import pandas as pd
 import streamlit as st
 
-DB_PATH = Path(__file__).resolve().parent.parent / "qc_database.db"
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-# Session-state keys per form
-_SS_UNITS = "_units_{}"        # list of serial numbers
-_SS_ACTIVE = "_active_unit_{}"  # current serial
-_SS_DATA = "_unit_data_{}"      # {serial: {state dict}}
+UPLOADS_ROOT = Path(__file__).resolve().parent.parent / "uploads"
 
 
-def _conn():
-    return sqlite3.connect(str(DB_PATH))
+# ──────────────────────────────────────────────────────────────────
+# Lapisan penyimpanan (disk)
+# ──────────────────────────────────────────────────────────────────
+
+def _store_path(form_type: str) -> Path:
+    return DATA_DIR / f"{form_type}_units.json"
 
 
-def _ensure_table(table: str):
-    with _conn() as c:
-        c.execute(f"""
-            CREATE TABLE IF NOT EXISTS {table} (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                no_sn TEXT NOT NULL,
-                form_key TEXT NOT NULL,
-                tab_name TEXT,
-                field_name TEXT,
-                old_value TEXT,
-                new_value TEXT,
-                changed_by TEXT DEFAULT 'inspector',
-                changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                snapshot_json TEXT
-            )
-        """)
-        c.commit()
-
-
-def _form_table(form_key: str) -> str:
-    return f"{form_key}_history"
-
-
-def init_units(form_key: str, default_serials: list = None):
-    """Inisialisasi state multi-unit. Dipanggil sekali per form render."""
-    units_key = _SS_UNITS.format(form_key)
-    active_key = _SS_ACTIVE.format(form_key)
-    data_key = _SS_DATA.format(form_key)
-
-    if units_key not in st.session_state:
-        if default_serials:
-            st.session_state[units_key] = list(default_serials)
-        else:
-            st.session_state[units_key] = []
-    if active_key not in st.session_state:
-        st.session_state[active_key] = (
-            st.session_state[units_key][0] if st.session_state[units_key] else None
-        )
-    if data_key not in st.session_state:
-        st.session_state[data_key] = {}
-
-
-def get_units(form_key: str) -> list:
-    return st.session_state.get(_SS_UNITS.format(form_key), [])
-
-
-def get_active_serial(form_key: str) -> str:
-    return st.session_state.get(_SS_ACTIVE.format(form_key), None)
-
-
-def get_active_unit_state(form_key: str) -> dict:
-    """Return full state dict for the active unit, or empty dict."""
-    serial = get_active_serial(form_key)
-    if not serial:
+def _load_store(form_type: str) -> dict:
+    path = _store_path(form_type)
+    if not path.exists():
         return {}
-    data = st.session_state.get(_SS_DATA.format(form_key), {})
-    return data.get(serial, {})
-
-
-def set_unit_state(form_key: str, serial: str, field: str, value):
-    """Set a field on a unit's state and return whether it changed."""
-    data_key = _SS_DATA.format(form_key)
-    if data_key not in st.session_state:
-        st.session_state[data_key] = {}
-    unit_data = st.session_state[data_key].setdefault(serial, {})
-    old = unit_data.get(field)
-    changed = old != value
-    unit_data[field] = value
-    return changed
-
-
-def add_unit(form_key: str, serial: str):
-    """Add a new unit serial to the list."""
-    units_key = _SS_UNITS.format(form_key)
-    if units_key not in st.session_state:
-        st.session_state[units_key] = []
-    if serial and serial not in st.session_state[units_key]:
-        st.session_state[units_key].append(serial)
-        st.session_state[_SS_ACTIVE.format(form_key)] = serial
-
-
-def remove_unit(form_key: str, serial: str):
-    """Remove a unit serial from the list."""
-    units_key = _SS_UNITS.format(form_key)
-    data_key = _SS_DATA.format(form_key)
-    if units_key in st.session_state and serial in st.session_state[units_key]:
-        st.session_state[units_key].remove(serial)
-    if data_key in st.session_state and serial in st.session_state[data_key]:
-        del st.session_state[data_key][serial]
-    active_key = _SS_ACTIVE.format(form_key)
-    if st.session_state.get(active_key) == serial:
-        st.session_state[active_key] = (
-            st.session_state[units_key][0] if st.session_state.get(units_key) else None
-        )
-
-
-def _save_history(form_key: str, serial: str, tab_name: str, field_name: str,
-                  old_val, new_val, changed_by="inspector", snapshot=None):
-    """Insert a history row."""
-    table = _form_table(form_key)
-    _ensure_table(table)
     try:
-        with _conn() as c:
-            c.execute(
-                f"""INSERT INTO {table}
-                   (no_sn, form_key, tab_name, field_name, old_value, new_value, changed_by, changed_at, snapshot_json)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (
-                    serial, form_key, tab_name, field_name,
-                    json.dumps(old_val, default=str) if old_val is not None else None,
-                    json.dumps(new_val, default=str) if new_val is not None else None,
-                    changed_by,
-                    datetime.now().isoformat(timespec="seconds"),
-                    json.dumps(snapshot, default=str) if snapshot else None,
-                ),
-            )
-            c.commit()
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        # File kosong/korup — jangan sampai bikin app crash, mulai dari kosong.
+        # (File lama otomatis tergantikan pada penyimpanan berikutnya.)
+        return {}
+
+
+def _save_store(form_type: str, store: dict) -> None:
+    """Atomic write: tulis ke file sementara dulu, baru rename ke nama
+    file asli. Ini mencegah file JSON rusak/setengah-tertulis kalau app
+    mati tepat di tengah proses penyimpanan.
+
+    Di Windows, os.replace() kadang gagal dengan
+    'PermissionError: [WinError 5] Access is denied' kalau file tujuan
+    sedang dikunci SESAAT oleh proses lain (paling sering: antivirus/
+    Windows Defender yang otomatis men-scan file yang baru ditulis, atau
+    folder project disinkron OneDrive/Dropbox). Lock semacam ini normalnya
+    lepas dalam hitungan puluhan-ratusan milidetik, jadi di sini kita
+    retry beberapa kali dengan jeda singkat sebelum menyerah."""
+    path = _store_path(form_type)
+    fd, tmp_path = tempfile.mkstemp(dir=str(DATA_DIR), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(store, f, ensure_ascii=False, indent=2, default=str)
+
+        last_err = None
+        for attempt in range(6):  # ~0+20+40+80+160+320 ms total
+            try:
+                os.replace(tmp_path, path)
+                return
+            except PermissionError as e:
+                last_err = e
+                time.sleep(0.02 * (2 ** attempt))
+
+        # Fallback: rename tetap gagal (biasanya karena antivirus/OneDrive
+        # masih memegang handle file tujuan). Tulis langsung ke file asli
+        # sebagai upaya terakhir — sedikit kurang "atomic", tapi jauh lebih
+        # baik daripada progres pengguna gagal tersimpan sama sekali.
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(store, f, ensure_ascii=False, indent=2, default=str)
+        except Exception:
+            raise last_err
+        finally:
+            if os.path.exists(tmp_path):
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
     except Exception:
-        pass  # history is best-effort
+        if os.path.exists(tmp_path):
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
+        raise
 
 
-def autosave_unit(form_key: str, field_name: str, value, tab_name: str = ""):
-    """
-    Autosave a field for the active unit. Only writes history if changed.
-    Also pushes value to session_state so other tabs can read it.
-    """
-    serial = get_active_serial(form_key)
-    if not serial:
-        return
-
-    # Also mirror to st.session_state[field_name] so existing form code works
-    st.session_state[field_name] = value
-
-    # Check if changed vs stored state
-    data_key = _SS_DATA.format(form_key)
-    unit_data = st.session_state.setdefault(data_key, {}).setdefault(serial, {})
-    old = unit_data.get(field_name)
-
-    if old != value:
-        _save_history(form_key, serial, tab_name, field_name, old, value, snapshot=unit_data)
-        unit_data[field_name] = value
-        st.toast(f"💾 Tersimpan: {field_name} (unit {serial})", icon="💾")
+def _cache_key(form_type: str) -> str:
+    return f"_unit_store_{form_type}"
 
 
-def render_unit_selector(form_key: str, label_prefix: str = "Unit"):
-    """
-    Render UI untuk tambah / pilih / hapus unit.
-    Returns the active serial.
-    """
-    units = get_units(form_key)
-    active = get_active_serial(form_key)
+def _active_key(form_type: str) -> str:
+    return f"_active_serial_{form_type}"
 
-    st.markdown(
-        '<div class="siak-card-title"><i class="bi bi-list-nested"></i> '
-        f"Daftar Unit Pengujian ({len(units)} unit)</div>",
-        unsafe_allow_html=True,
-    )
 
-    # Input untuk tambah unit baru
-    c_add, c_btn = st.columns([3, 1])
-    with c_add:
-        new_serial = st.text_input(
-            "Nomor Seri Unit Baru",
-            key=f"new_serial_{form_key}",
-            placeholder="cth: OP-2026-001",
-            label_visibility="collapsed",
+def _get_store(form_type: str) -> dict:
+    """Store di-cache di session_state supaya tidak baca disk tiap rerun,
+    tapi isi cache-nya SELALU berasal dari file (dimuat sekali per sesi
+    lewat init_units)."""
+    ck = _cache_key(form_type)
+    if ck not in st.session_state:
+        st.session_state[ck] = _load_store(form_type)
+    return st.session_state[ck]
+
+
+# ──────────────────────────────────────────────────────────────────
+# Public API — dipakai oleh form_onepost.py / form_phbtr.py / form_pmcb.py
+# ──────────────────────────────────────────────────────────────────
+
+def init_units(form_type: str) -> None:
+    """Panggil di awal setiap form_xxx(). Memuat data tersimpan dari disk
+    (sekali per sesi browser) dan menyiapkan unit aktif default."""
+    store = _get_store(form_type)
+    ak = _active_key(form_type)
+    if ak not in st.session_state:
+        existing = sorted(store.keys())
+        st.session_state[ak] = existing[0] if existing else ""
+
+
+def render_unit_selector(form_type: str) -> None:
+    """UI untuk memilih unit (nomor seri) yang sedang dikerjakan, atau
+    membuat unit baru. Setiap unit disimpan terpisah di disk sehingga
+    berpindah-pindah unit tidak menghapus progres unit lain."""
+    store = _get_store(form_type)
+    ak = _active_key(form_type)
+    existing = sorted(store.keys())
+
+    NEW_LABEL = "➕ Buat unit / nomor seri baru"
+    c1, c2 = st.columns([3, 2])
+    with c1:
+        options = existing + [NEW_LABEL]
+        current = st.session_state.get(ak, "")
+        idx = options.index(current) if current in existing else len(options) - 1
+        choice = st.selectbox(
+            "Unit aktif (nomor seri)", options, index=idx, key=f"_selector_{form_type}"
         )
-    with c_btn:
-        if st.button("➕ Tambah", key=f"add_unit_{form_key}", use_container_width=True):
-            if new_serial.strip():
-                add_unit(form_key, new_serial.strip())
-                st.rerun()
-
-    if not units:
-        st.info("Belum ada unit. Tambahkan nomor seri unit untuk mulai pengujian.")
-        return None
-
-    # Selector unit aktif
-    active = st.selectbox(
-        f"Pilih unit aktif untuk diedit:",
-        units,
-        index=units.index(active) if active in units else 0,
-        key=f"sel_unit_{form_key}",
-    )
-    st.session_state[_SS_ACTIVE.format(form_key)] = active
-
-    # Tombol hapus unit
-    if st.button("🗑 Hapus unit ini", key=f"del_unit_{form_key}"):
-        remove_unit(form_key, active)
-        st.rerun()
-
-    return active
-
-
-def render_history_panel(form_key: str, limit: int = 20):
-    """Tampilkan riwayat perubahan untuk unit aktif."""
-    serial = get_active_serial(form_key)
-    if not serial:
-        st.info("Pilih unit untuk melihat riwayat.")
-        return
-
-    table = _form_table(form_key)
-    _ensure_table(table)
-
-    with _conn() as c:
-        cur = c.execute(
-            f"SELECT changed_at, tab_name, field_name, old_value, new_value, changed_by "
-            f"FROM {table} WHERE no_sn=? ORDER BY changed_at DESC LIMIT ?",
-            (serial, limit),
-        )
-        rows = cur.fetchall()
-
-    st.markdown(
-        f'<div class="siak-card-title" style="margin-top:14px;">'
-        f'<i class="bi bi-clock-history"></i> Riwayat Perubahan Unit {serial}</div>',
-        unsafe_allow_html=True,
-    )
-
-    if not rows:
-        st.caption("Belum ada perubahan tersimpan untuk unit ini.")
-        return
-
-    # Tampilkan sebagai timeline ringkas
-    for changed_at, tab_name, field_name, old_val, new_val, changed_by in rows:
-        old_str = (old_val[:40] + "...") if old_val and len(old_val) > 40 else (old_val or "-")
-        new_str = (new_val[:40] + "...") if new_val and len(new_val) > 40 else (new_val or "-")
-        st.markdown(
-            f'<div class="history-item">'
-            f'<span class="history-time">{changed_at}</span> '
-            f'<span class="history-tab">[{tab_name or "-"}]</span> '
-            f'<b>{field_name}</b>: '
-            f'<span class="history-old">{old_str}</span> → '
-            f'<span class="history-new">{new_str}</span>'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
-
-
-def get_all_unit_states(form_key: str) -> dict:
-    """Return {serial: state_dict} for all units."""
-    return st.session_state.get(_SS_DATA.format(form_key), {})
-
-
-def get_all_units_for_export(form_key: str, info: dict = None) -> list:
-    """
-    Return list of unit state dicts ready for PDF export.
-    Merges info dict into each unit's 'info' key if provided.
-    """
-    states = get_all_unit_states(form_key)
-    units = []
-    for serial, state in states.items():
-        unit = dict(state)
-        if info:
-            existing_info = unit.get("info", {})
-            existing_info.update(info)
-            unit["info"] = existing_info
-        if "info" not in unit:
-            unit["info"] = {"nomor_seri": serial}
+    with c2:
+        if choice == NEW_LABEL:
+            new_serial = st.text_input("Nomor seri baru", key=f"_new_serial_{form_type}")
+            if new_serial:
+                st.session_state[ak] = new_serial
+                if new_serial not in store:
+                    store[new_serial] = {}
+                    _save_store(form_type, store)
         else:
-            unit["info"].setdefault("nomor_seri", serial)
-        units.append(unit)
-    return units
+            st.session_state[ak] = choice
+
+    active = st.session_state.get(ak, "")
+    if active:
+        meta = store.get(active, {}).get("_meta", {})
+        last_saved = meta.get("last_updated")
+        if last_saved:
+            st.caption(f"📌 Unit aktif: **{active}** — terakhir tersimpan {last_saved}")
+        else:
+            st.caption(f"📌 Unit aktif: **{active}** (belum ada data tersimpan)")
+
+
+def get_active_serial(form_type: str) -> str:
+    return st.session_state.get(_active_key(form_type), "")
+
+
+def get_active_unit_state(form_type: str) -> dict:
+    """Ambil seluruh data unit yang sedang aktif (semua key yang pernah
+    di-autosave), langsung dari store yang sudah dimuat dari disk."""
+    serial = get_active_serial(form_type)
+    store = _get_store(form_type)
+    return store.get(serial, {})
+
+
+def autosave_unit(form_type: str, key: str, data, tab_name: Optional[str] = None) -> None:
+    """Simpan `data` di bawah `key` untuk unit yang sedang aktif, dan
+    LANGSUNG tulis ke disk (bukan cuma session_state) supaya tidak
+    hilang walau Streamlit ditutup sebelum sempat export PDF."""
+    serial = get_active_serial(form_type)
+    if not serial:
+        return
+    store = _get_store(form_type)
+    unit = store.setdefault(serial, {})
+    unit[key] = data
+    unit["_meta"] = {
+        "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "last_tab": tab_name or key,
+    }
+    _save_store(form_type, store)
+
+
+def delete_unit(form_type: str, serial: str) -> bool:
+    """Hapus permanen satu unit/project: data JSON-nya (semua tab yang
+    pernah di-autosave) DAN folder foto lampirannya di disk
+    (uploads/<form_type>/<serial>/...), kalau ada.
+
+    Kalau unit ini yang sedang aktif, unit aktif otomatis dikosongkan
+    (form_xxx() akan menampilkan pilihan unit lain / buat baru di
+    render_unit_selector berikutnya).
+
+    Return True kalau serial ditemukan & berhasil dihapus dari store,
+    False kalau serial kosong atau memang tidak ada di store (tidak ada
+    apa-apa untuk dihapus).
+    """
+    if not serial:
+        return False
+    store = _get_store(form_type)
+    if serial not in store:
+        return False
+
+    store.pop(serial, None)
+    _save_store(form_type, store)
+
+    if get_active_serial(form_type) == serial:
+        st.session_state[_active_key(form_type)] = ""
+
+    # Bersihkan folder foto lampiran unit ini kalau ada. Kegagalan di sini
+    # (mis. file lagi dikunci proses lain) TIDAK dianggap fatal — data
+    # JSON-nya sudah pasti terhapus di atas, itu yang paling penting.
+    unit_uploads_dir = UPLOADS_ROOT / form_type / serial
+    if unit_uploads_dir.exists():
+        try:
+            shutil.rmtree(unit_uploads_dir)
+        except OSError:
+            pass
+
+    return True
+
+
+def get_all_units_for_export(form_type: str) -> list:
+    """Kembalikan semua unit tersimpan (dari disk) sebagai list dict,
+    siap dipakai oleh build_onepost_pdf() / build_phbtr_pdf() / build_pmcb_pdf()."""
+    store = _get_store(form_type)
+    return list(store.values())
+
+
+def render_history_panel(form_type: str) -> None:
+    """Tabel riwayat unit tersimpan + opsi hapus satu unit."""
+    store = _get_store(form_type)
+    if not store:
+        st.caption("Belum ada unit tersimpan di penyimpanan lokal.")
+        return
+
+    st.markdown("#### 🗂 Riwayat unit tersimpan (lokal)")
+    rows = []
+    for serial, unit in store.items():
+        meta = unit.get("_meta", {})
+        rows.append({
+            "Nomor Seri": serial,
+            "Terakhir disimpan": meta.get("last_updated", "-"),
+            "Tab terakhir diedit": meta.get("last_tab", "-"),
+            "Jumlah bagian terisi": len([k for k in unit.keys() if k != "_meta"]),
+        })
+    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    st.caption(f"📁 Disimpan di: `{_store_path(form_type)}`")
+
+    del_serial = st.selectbox(
+        "Hapus unit tersimpan (opsional)",
+        [""] + sorted(store.keys()),
+        key=f"_delete_select_{form_type}",
+    )
+    if del_serial:
+        confirm = st.checkbox(
+            f"Saya yakin ingin menghapus permanen unit '{del_serial}'",
+            key=f"_delete_confirm_{form_type}",
+        )
+        if confirm and st.button(f"🗑 Hapus unit {del_serial}", key=f"_delete_btn_{form_type}"):
+            delete_unit(form_type, del_serial)
+            st.rerun()

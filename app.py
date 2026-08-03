@@ -16,6 +16,10 @@ import numpy as np
 from streamlit_option_menu import option_menu
 
 # Import modul lokal
+from modules.dashboard_data import (
+    total_onepost, total_phbtr, total_pmcb,
+    ambil_semua_onepost, ambil_semua_phbtr, ambil_semua_pmcb,
+)
 from modules.form_onepost import form_onepost
 from modules.form_phbtr import form_phbtr
 from modules.form_pmcb import form_pmcb 
@@ -600,4 +604,26 @@ elif st.session_state.menu == "pmcb":
 
     st.divider()
     form_pmcb()
-    
+elif st.session_state.menu == "debug":
+
+    st.title("🗄 Database Checker")
+
+    import sqlite3
+    import pandas as pd
+
+    conn = sqlite3.connect("qc_database.db")
+
+    tabel = pd.read_sql(
+        "SELECT name FROM sqlite_master WHERE type='table'",
+        conn
+    )
+
+    st.subheader("Daftar Tabel")
+    st.dataframe(tabel)
+
+    for t in tabel["name"]:
+        st.subheader(f"Isi Tabel : {t}")
+        df = pd.read_sql(f"SELECT * FROM {t}", conn)
+        st.dataframe(df)
+
+    conn.close()

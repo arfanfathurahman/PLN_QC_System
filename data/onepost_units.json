@@ -1,0 +1,318 @@
+{
+  "07": {
+    "info": {
+      "no_amp": "26019301",
+      "nama_produk": "SUPERSUN 1300VA",
+      "nomor_seri": "07",
+      "daya": "1300VA",
+      "tanggal": "2026-08-03",
+      "tegangan_input": "220 VAC ; 24 VDC (Grid) ; 36-90 VDC (PV)",
+      "tegangan_output": "220-230 VAC",
+      "inspector": "",
+      "customer": "PT PLN (Persero)",
+      "status": "Draft"
+    },
+    "_meta": {
+      "last_updated": "2026-08-03 11:27:09",
+      "last_tab": "Lampiran"
+    },
+    "visual_onepost": [
+      {
+        "item": "Hasil pengerjaan baik dan kondisi baru",
+        "status": true
+      },
+      {
+        "item": "Kesesuaian stiker papan nama",
+        "status": true
+      }
+    ],
+    "selungkup_onepost": [
+      {
+        "parameter": "Cat powder Coating min 80 μm",
+        "nilai": "80 μm | RAL7032",
+        "status": "✓"
+      },
+      {
+        "parameter": "Handle pengangkat supersun",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Branding Logo PLN",
+        "nilai": "-",
+        "status": "✓"
+      }
+    ],
+    "komponen_onepost": [
+      {
+        "komponen": "Inverter",
+        "status": "✓"
+      },
+      {
+        "komponen": "MPPT/SCC",
+        "status": "✓"
+      },
+      {
+        "komponen": "RCBO",
+        "status": "✓"
+      },
+      {
+        "komponen": "MCB 1 (32 A)",
+        "status": "✓"
+      },
+      {
+        "komponen": "MCB 2 (63 A)",
+        "status": "✓"
+      },
+      {
+        "komponen": "Smart Circuit Breaker",
+        "status": "✓"
+      },
+      {
+        "komponen": "Baterai",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar Positif dan Negatif",
+        "nilai": "180 x 25 x 3 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar pembumian",
+        "nilai": "135 x 15 x 3 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Setting Proteksi kWh Taxnelle",
+        "nilai": "Rating 4A",
+        "status": "✓"
+      },
+      {
+        "komponen": "Kabel instalasi",
+        "nilai": "NYYHY 2x2.5mm, NYAF 10mm, 6mm, 2.5mm, 0.75mm, AWG 22",
+        "status": "✓"
+      }
+    ],
+    "komponen_detail_onepost": {
+      "inverter": {
+        "merk": "ZAMDON",
+        "daya": "2000W",
+        "vin": "24 VDC",
+        "vout": "230 VAC ± 10%",
+        "freq": "50 Hz",
+        "out": "Gelombang sinus murni",
+        "status": "✓"
+      },
+      "mppt": {
+        "merk": "ZAMDON",
+        "tipe": "XTRA4215N",
+        "vdc": "24 VDC",
+        "vpv": "150 VDC",
+        "daya": "1040W/24V",
+        "arus": "40 A",
+        "status": "✓"
+      },
+      "rcbo": {
+        "merk": "Chint",
+        "tipe": "NB2LE",
+        "arus": "25 A",
+        "freq": "50 Hz",
+        "kap": "6 kA",
+        "residu": "30 mA",
+        "status": "✓"
+      },
+      "mcb1": {
+        "merk": "Suntree",
+        "tipe": "SL7N-63 DC",
+        "arus": "32 A",
+        "kutub": "1P",
+        "std": "IEC 60947-2",
+        "kap": "6 kA",
+        "status": "✓"
+      },
+      "mcb2": {
+        "merk": "Suntree",
+        "tipe": "SL7N-63 DC",
+        "arus": "63 A",
+        "kutub": "1P",
+        "std": "IEC 60947-2",
+        "kap": "6 kA",
+        "status": "✓"
+      },
+      "scb": {
+        "merk": "Taxnele",
+        "tipe": "TXCB2-VAP",
+        "arus": "10-63 A",
+        "kutub": "1P+N",
+        "std": "IEC 60947-2",
+        "konek": "2.4 GHz",
+        "status": "✓"
+      },
+      "baterai": {
+        "merk": "SUP",
+        "vnom": "25,6 V",
+        "kap": "100 Ah",
+        "vpengisian": "28,8V",
+        "tipe": "LiFePO4",
+        "umur": "2500 Cycle",
+        "status": "✓"
+      }
+    },
+    "tarik_skun_onepost": [
+      {
+        "ukuran": 0.75,
+        "standar": 45.0,
+        "hasil": 56.22,
+        "status": true
+      },
+      {
+        "ukuran": 2.5,
+        "standar": 150.0,
+        "hasil": 179.2,
+        "status": true
+      },
+      {
+        "ukuran": 4,
+        "standar": 240.0,
+        "hasil": 273.0,
+        "status": true
+      },
+      {
+        "ukuran": 6,
+        "standar": 360.0,
+        "hasil": 398.9,
+        "status": true
+      },
+      {
+        "ukuran": 10,
+        "standar": 600.0,
+        "hasil": 659.6,
+        "status": true
+      }
+    ],
+    "dimensi_onepost": {
+      "A": [
+        280,
+        280
+      ],
+      "B": [
+        605,
+        605
+      ],
+      "C": [
+        530,
+        530
+      ],
+      "D": [
+        327.8,
+        327.8
+      ],
+      "E": [
+        107,
+        107
+      ],
+      "F": [
+        422.6,
+        422.6
+      ],
+      "G": [
+        400,
+        400
+      ],
+      "H": [
+        160,
+        160
+      ]
+    },
+    "board_onepost": [
+      {
+        "item": "ID Board Monitoring",
+        "spek": "ID terdata/terdaftar",
+        "status": true
+      },
+      {
+        "item": "Power Supply Board",
+        "spek": "Board Menyala",
+        "status": true
+      },
+      {
+        "item": "Komunikasi",
+        "spek": "Tersambung dengan internet",
+        "status": true
+      },
+      {
+        "item": "Sensor",
+        "spek": "Sensor terbaca di dashboard",
+        "status": true
+      }
+    ],
+    "fungsi_onepost": [
+      {
+        "item": "MPPT/SCC",
+        "spek": "Setting SCC melalui dongle",
+        "status": true
+      },
+      {
+        "item": "PV Input Charging",
+        "spek": "Charging 80-90 VDC, Current Charging 16 ~ 30 A",
+        "status": true
+      },
+      {
+        "item": "Display Inverter",
+        "spek": "Display ON",
+        "status": true
+      },
+      {
+        "item": "Indikator Lampu",
+        "spek": "Indikator Baterai, PV, Inv",
+        "status": true
+      },
+      {
+        "item": "Fan",
+        "spek": "Power ON",
+        "status": true
+      },
+      {
+        "item": "Limit Switch",
+        "spek": "ON/OFF",
+        "status": true
+      },
+      {
+        "item": "Load Output 1 & 2",
+        "spek": "Output Load ON, beban 300-800 W",
+        "status": true
+      },
+      {
+        "item": "Display BMS Baterai",
+        "spek": "Display ON, Nominal SOC%",
+        "nilai": 94.0,
+        "satuan": "%",
+        "status": true
+      },
+      {
+        "item": "DC System Baterai",
+        "spek": "Tegangan Baterai Vo=24~28 VDC",
+        "nilai": 26.9,
+        "satuan": "VDC",
+        "status": true
+      },
+      {
+        "item": "AC System Inverter",
+        "spek": "Output Tegangan AC 220-230 V",
+        "nilai": 220.0,
+        "satuan": "VAC",
+        "status": true
+      }
+    ],
+    "catatan_pengesahan_onepost": {
+      "hasil_pengujian": "diterima",
+      "catatan": "",
+      "diperiksa_oleh": ""
+    },
+    "lampiran_onepost": {
+      "nama_produk": "SUPERSUN 1300VA",
+      "nomor_seri": "07",
+      "foto": []
+    }
+  }
+}

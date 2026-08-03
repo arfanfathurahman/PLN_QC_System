@@ -1,0 +1,778 @@
+{
+  "1": {
+    "info": {
+      "no_produk": "",
+      "nomor_seri": "1",
+      "no_amp": "",
+      "jenis_panel": "PHBTR PASANGAN LUAR",
+      "tipe": "PL-250-2-LBS-ST",
+      "standard": "SPLN D3,016-1:2018",
+      "tanggal": "2026-08-03",
+      "inspector": "",
+      "customer": "PT PLN (Persero)",
+      "program": "",
+      "lokasi": "",
+      "status": "Draft",
+      "deskripsi_penugasan": "Penugasan Pembuatan Unit PHBTR",
+      "nama_qc": ""
+    },
+    "_meta": {
+      "last_updated": "2026-08-03 11:27:02",
+      "last_tab": "Baut"
+    },
+    "catatan_phbtr": {
+      "catatan": "",
+      "hasil_pengujian": "diterima",
+      "diperiksa_oleh": ""
+    },
+    "visual_phbtr": [
+      {
+        "item": "Hasil pengerjaan baik dan kondisi baru",
+        "status": true
+      },
+      {
+        "item": "Kesesuaian papan nama",
+        "status": true
+      }
+    ],
+    "selungkup_phbtr": [
+      {
+        "parameter": "Bahan dan tebal selungkup & montase",
+        "nilai": "Plat SPCC t.2 mm",
+        "status": "✓"
+      },
+      {
+        "parameter": "Karet Penutup",
+        "nilai": "Karet Penutup",
+        "status": "✓"
+      },
+      {
+        "parameter": "Cat powder coating min 80 μm",
+        "nilai": "80 μm | RAL7032",
+        "status": "✓"
+      },
+      {
+        "parameter": "Tingkat pengaman IP34",
+        "nilai": "IP34",
+        "status": "✓"
+      },
+      {
+        "parameter": "Klem untuk pemegang kabel",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Lengan penopang pada tiang",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Kuping pengangkat",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Bonding pembumian antara pintu dan badan selungkup",
+        "nilai": "Kabel NYF 10 mm² warna kuning-hijau",
+        "status": "✓"
+      },
+      {
+        "parameter": "Ventilasi udara dilengkapi plat berlubang (ram) 4 bh",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Bukaan pintu minimal 160°",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Handel pintu berikut kunci master dan fasilitas gembok",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Rak penyimpanan data/dokumen",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Logo PLN dan tanda peringatan bahaya listrik",
+        "nilai": "-",
+        "status": "✓"
+      }
+    ],
+    "komponen_phbtr": [
+      {
+        "komponen": "Saklar Utama",
+        "status": "✓"
+      },
+      {
+        "komponen": "Fuse Rail",
+        "status": "✓"
+      },
+      {
+        "komponen": "Instrumen",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar Fasa",
+        "nilai": "30 x 6 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar Netral",
+        "nilai": "30 x 6 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar Pembumian",
+        "nilai": "20 x 5 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Kontak-kontak",
+        "nilai": "Merk Uticon",
+        "status": "✓"
+      },
+      {
+        "komponen": "Proteksi Lampu",
+        "nilai": "Fuse HRC 10 A",
+        "status": "✓"
+      },
+      {
+        "komponen": "Kabel Instalasi",
+        "nilai": "NYAF 2.5 mm²",
+        "status": "✓"
+      }
+    ],
+    "komponen_detail_phbtr": {
+      "saklar_utama": {
+        "merk": "HEFFTRON",
+        "standar": "IEC 60947-3",
+        "kategori": "AC 22B",
+        "arus": 400,
+        "short": 12.6,
+        "pelapis": "Tembaga lapis perak",
+        "status": "✓"
+      },
+      "fuse_rail": {
+        "merk": "HEFFTRON",
+        "standar": "IEC 60269-2",
+        "ukuran": "Size 1",
+        "arus": 250,
+        "short": 50,
+        "terminal": "M-Terminal",
+        "pelapis": "Tembaga lapis timah",
+        "disipasi": 32,
+        "status": "✓"
+      },
+      "instrumen": {
+        "jenis": "MDI",
+        "status": "✓"
+      },
+      "busbar": [
+        {
+          "komponen": "Busbar Fasa",
+          "nilai": "30 x 6 mm",
+          "status": "✓"
+        },
+        {
+          "komponen": "Busbar Netral",
+          "nilai": "30 x 6 mm",
+          "status": "✓"
+        },
+        {
+          "komponen": "Busbar Pembumian",
+          "nilai": "20 x 5 mm",
+          "status": "✓"
+        },
+        {
+          "komponen": "Kontak-kontak",
+          "nilai": "Merk Uticon",
+          "status": "✓"
+        },
+        {
+          "komponen": "Proteksi Lampu",
+          "nilai": "Fuse HRC 10 A",
+          "status": "✓"
+        },
+        {
+          "komponen": "Kabel Instalasi",
+          "nilai": "NYAF 2.5 mm²",
+          "status": "✓"
+        }
+      ]
+    },
+    "baut_phbtr": [
+      {
+        "item": "Keluaran saklar utama - busbar hubungan fasa R, S, T",
+        "standar": "70 Nm",
+        "aktual": 0.0,
+        "hasil": "✅ Sesuai",
+        "keterangan": ""
+      },
+      {
+        "item": "Antar busbar hubung fasa R, S, T",
+        "standar": "70 Nm",
+        "aktual": 0.0,
+        "hasil": "✅ Sesuai",
+        "keterangan": ""
+      },
+      {
+        "item": "Busbar hubung - Fuse rall fasa R, S, T",
+        "standar": "70 Nm",
+        "aktual": 0.0,
+        "hasil": "✅ Sesuai",
+        "keterangan": ""
+      }
+    ],
+    "dimensi_phbtr": {
+      "A": [
+        1200,
+        1200
+      ],
+      "B": [
+        1100,
+        1100
+      ],
+      "C": [
+        100,
+        100
+      ],
+      "D": [
+        450,
+        450
+      ],
+      "E": [
+        50,
+        50
+      ],
+      "F": [
+        100,
+        100
+      ],
+      "G": [
+        185,
+        185
+      ],
+      "H": [
+        60,
+        60
+      ],
+      "I": [
+        680,
+        680
+      ],
+      "J": [
+        1200,
+        1200
+      ],
+      "K": [
+        60,
+        60
+      ]
+    },
+    "operasi_phbtr": [
+      {
+        "kelompok": "Operasi buka tutup 5 kali",
+        "item": "Saklar Utama",
+        "status": true
+      },
+      {
+        "kelompok": "Operasi buka tutup 5 kali",
+        "item": "Pintu",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Instrumen ukur",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Lampu indikator",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Lampu penerangan",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Kontak-kontak",
+        "status": true
+      }
+    ],
+    "dielektrik_phbtr": [
+      {
+        "sirkuit": "L1-(L2 + L3 + N + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "L2-(L1 + L3 + N + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "L3-(L1 + L2 + N + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "N-(L1 + L2 + L3 + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "(L1+L2+L3) - (L1'+L2'+L3')",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "(L1'+L2'+L3') - (L1+L2+L3)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "Sirkit kontrol - (sirkit utama+bagian konduktif terbuka+badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      }
+    ],
+    "sirkit_protektif_phbtr": [
+      {
+        "item": "Pintu metering",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "mΩ"
+      },
+      {
+        "item": "Rangka utama",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "µΩ"
+      },
+      {
+        "item": "Rangka dudukan fuse fasa L1, L2, L3",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "µΩ"
+      },
+      {
+        "item": "Plat dudukan fuse peralatan bantu",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "µΩ"
+      },
+      {
+        "item": "Pintu utama",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "mΩ"
+      }
+    ],
+    "lampiran_phbtr": {
+      "nama_produk": "PHBTR PASANGAN LUAR",
+      "nomor_seri": "1",
+      "foto": []
+    }
+  },
+  "2": {
+    "info": {
+      "no_produk": "",
+      "nomor_seri": "2",
+      "no_amp": "",
+      "jenis_panel": "PHBTR PASANGAN LUAR",
+      "tipe": "PL-250-2-LBS-ST",
+      "standard": "SPLN D3,016-1:2018",
+      "tanggal": "2026-08-03",
+      "inspector": "",
+      "customer": "PT PLN (Persero)",
+      "program": "",
+      "lokasi": "",
+      "status": "Draft",
+      "deskripsi_penugasan": "Penugasan Pembuatan Unit PHBTR",
+      "nama_qc": ""
+    },
+    "_meta": {
+      "last_updated": "2026-08-03 11:22:05",
+      "last_tab": "Lampiran"
+    },
+    "catatan_phbtr": {
+      "catatan": "",
+      "hasil_pengujian": "diterima",
+      "diperiksa_oleh": ""
+    },
+    "visual_phbtr": [
+      {
+        "item": "Hasil pengerjaan baik dan kondisi baru",
+        "status": true
+      },
+      {
+        "item": "Kesesuaian papan nama",
+        "status": true
+      }
+    ],
+    "selungkup_phbtr": [
+      {
+        "parameter": "Bahan dan tebal selungkup & montase",
+        "nilai": "Plat SPCC t.2 mm",
+        "status": "✓"
+      },
+      {
+        "parameter": "Karet Penutup",
+        "nilai": "Karet Penutup",
+        "status": "✓"
+      },
+      {
+        "parameter": "Cat powder coating min 80 μm",
+        "nilai": "80 μm | RAL7032",
+        "status": "✓"
+      },
+      {
+        "parameter": "Tingkat pengaman IP34",
+        "nilai": "IP34",
+        "status": "✓"
+      },
+      {
+        "parameter": "Klem untuk pemegang kabel",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Lengan penopang pada tiang",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Kuping pengangkat",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Bonding pembumian antara pintu dan badan selungkup",
+        "nilai": "Kabel NYF 10 mm² warna kuning-hijau",
+        "status": "✓"
+      },
+      {
+        "parameter": "Ventilasi udara dilengkapi plat berlubang (ram) 4 bh",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Bukaan pintu minimal 160°",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Handel pintu berikut kunci master dan fasilitas gembok",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Rak penyimpanan data/dokumen",
+        "nilai": "-",
+        "status": "✓"
+      },
+      {
+        "parameter": "Logo PLN dan tanda peringatan bahaya listrik",
+        "nilai": "-",
+        "status": "✓"
+      }
+    ],
+    "komponen_phbtr": [
+      {
+        "komponen": "Saklar Utama",
+        "status": "✓"
+      },
+      {
+        "komponen": "Fuse Rail",
+        "status": "✓"
+      },
+      {
+        "komponen": "Instrumen",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar Fasa",
+        "nilai": "30 x 6 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar Netral",
+        "nilai": "30 x 6 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Busbar Pembumian",
+        "nilai": "20 x 5 mm",
+        "status": "✓"
+      },
+      {
+        "komponen": "Kontak-kontak",
+        "nilai": "Merk Uticon",
+        "status": "✓"
+      },
+      {
+        "komponen": "Proteksi Lampu",
+        "nilai": "Fuse HRC 10 A",
+        "status": "✓"
+      },
+      {
+        "komponen": "Kabel Instalasi",
+        "nilai": "NYAF 2.5 mm²",
+        "status": "✓"
+      }
+    ],
+    "komponen_detail_phbtr": {
+      "saklar_utama": {
+        "merk": "HEFFTRON",
+        "standar": "IEC 60947-3",
+        "kategori": "AC 22B",
+        "arus": 400,
+        "short": 12.6,
+        "pelapis": "Tembaga lapis perak",
+        "status": "✓"
+      },
+      "fuse_rail": {
+        "merk": "HEFFTRON",
+        "standar": "IEC 60269-2",
+        "ukuran": "Size 1",
+        "arus": 250,
+        "short": 50,
+        "terminal": "M-Terminal",
+        "pelapis": "Tembaga lapis timah",
+        "disipasi": 32,
+        "status": "✓"
+      },
+      "instrumen": {
+        "jenis": "MDI",
+        "status": "✓"
+      },
+      "busbar": [
+        {
+          "komponen": "Busbar Fasa",
+          "nilai": "30 x 6 mm",
+          "status": "✓"
+        },
+        {
+          "komponen": "Busbar Netral",
+          "nilai": "30 x 6 mm",
+          "status": "✓"
+        },
+        {
+          "komponen": "Busbar Pembumian",
+          "nilai": "20 x 5 mm",
+          "status": "✓"
+        },
+        {
+          "komponen": "Kontak-kontak",
+          "nilai": "Merk Uticon",
+          "status": "✓"
+        },
+        {
+          "komponen": "Proteksi Lampu",
+          "nilai": "Fuse HRC 10 A",
+          "status": "✓"
+        },
+        {
+          "komponen": "Kabel Instalasi",
+          "nilai": "NYAF 2.5 mm²",
+          "status": "✓"
+        }
+      ]
+    },
+    "baut_phbtr": [
+      {
+        "item": "Keluaran saklar utama - busbar hubungan fasa R, S, T",
+        "standar": "70 Nm",
+        "aktual": 0.0,
+        "hasil": "✅ Sesuai",
+        "keterangan": ""
+      },
+      {
+        "item": "Antar busbar hubung fasa R, S, T",
+        "standar": "70 Nm",
+        "aktual": 0.0,
+        "hasil": "✅ Sesuai",
+        "keterangan": ""
+      },
+      {
+        "item": "Busbar hubung - Fuse rall fasa R, S, T",
+        "standar": "70 Nm",
+        "aktual": 0.0,
+        "hasil": "✅ Sesuai",
+        "keterangan": ""
+      }
+    ],
+    "dimensi_phbtr": {
+      "A": [
+        1200,
+        1200
+      ],
+      "B": [
+        1100,
+        1100
+      ],
+      "C": [
+        100,
+        100
+      ],
+      "D": [
+        450,
+        450
+      ],
+      "E": [
+        50,
+        50
+      ],
+      "F": [
+        100,
+        100
+      ],
+      "G": [
+        185,
+        185
+      ],
+      "H": [
+        60,
+        60
+      ],
+      "I": [
+        680,
+        680
+      ],
+      "J": [
+        1200,
+        1200
+      ],
+      "K": [
+        60,
+        60
+      ]
+    },
+    "operasi_phbtr": [
+      {
+        "kelompok": "Operasi buka tutup 5 kali",
+        "item": "Saklar Utama",
+        "status": true
+      },
+      {
+        "kelompok": "Operasi buka tutup 5 kali",
+        "item": "Pintu",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Instrumen ukur",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Lampu indikator",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Lampu penerangan",
+        "status": true
+      },
+      {
+        "kelompok": "Kontinyuitas pengawatan",
+        "item": "Kontak-kontak",
+        "status": true
+      }
+    ],
+    "dielektrik_phbtr": [
+      {
+        "sirkuit": "L1-(L2 + L3 + N + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "L2-(L1 + L3 + N + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "L3-(L1 + L2 + N + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "N-(L1 + L2 + L3 + Badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "(L1+L2+L3) - (L1'+L2'+L3')",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "(L1'+L2'+L3') - (L1+L2+L3)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      },
+      {
+        "sirkuit": "Sirkit kontrol - (sirkit utama+bagian konduktif terbuka+badan)",
+        "sebelum": 0.0,
+        "sesudah": 0.0,
+        "status": true
+      }
+    ],
+    "sirkit_protektif_phbtr": [
+      {
+        "item": "Pintu metering",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "mΩ"
+      },
+      {
+        "item": "Rangka utama",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "µΩ"
+      },
+      {
+        "item": "Rangka dudukan fuse fasa L1, L2, L3",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "µΩ"
+      },
+      {
+        "item": "Plat dudukan fuse peralatan bantu",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "µΩ"
+      },
+      {
+        "item": "Pintu utama",
+        "nilai": 0.0,
+        "status": true,
+        "satuan": "mΩ"
+      }
+    ],
+    "lampiran_phbtr": {
+      "nama_produk": "PHBTR PASANGAN LUAR",
+      "nomor_seri": "2",
+      "foto": []
+    }
+  }
+}

@@ -24,6 +24,7 @@ from modules.unit_manager import (
     get_active_serial,
     get_active_unit_state,
     autosave_unit,
+    delete_unit,
     render_history_panel,
     get_all_units_for_export,
 )
@@ -142,11 +143,28 @@ def form_onepost():
             }, tab_name="Informasi")
 
         thin_divider()
-        col1, col2 = st.columns(2)
-        with col1:
-            st.button("💾 Simpan Draft", key="simpan_onepost", use_container_width=True)
-        with col2:
-            st.button("➡ Lanjut ke Visual", key="lanjut_onepost", use_container_width=True)
+        if active_serial:
+            with st.expander("🗑️ Hapus Project "):
+                st.warning(
+                    f"Ini akan menghapus permanen semua data project **{active_serial}** "
+                    "(seluruh tab yang sudah diisi, termasuk foto lampiran). "
+                    "Tindakan ini tidak bisa dibatalkan."
+                )
+                confirm_delete = st.checkbox(
+                    f"Saya yakin ingin menghapus project '{active_serial}' secara permanen",
+                    key=f"confirm_delete_onepost_{active_serial}",
+                )
+                if st.button(
+                    "🗑️ Hapus Sekarang",
+                    key=f"hapus_btn_onepost_{active_serial}",
+                    type="primary",
+                    disabled=not confirm_delete,
+                    use_container_width=True,
+                ):
+                    delete_unit("onepost", active_serial)
+                    st.success(f"Project '{active_serial}' telah dihapus.")
+                    st.rerun()
+        st.button("➡ Lanjut ke Visual", key="lanjut_onepost", use_container_width=True)
         card_end()
 
     # ==========================================================

@@ -24,6 +24,7 @@ from modules.unit_manager import (
     get_active_serial,
     get_active_unit_state,
     autosave_unit,
+    delete_unit,
     render_history_panel,
     get_all_units_for_export,
 )
@@ -118,11 +119,28 @@ def form_pmcb():
             }, tab_name="Informasi")
 
         thin_divider()
-        col1, col2 = st.columns(2)
-        with col1:
-            st.button("💾 Simpan Draft", key="simpan_pmcb", use_container_width=True)
-        with col2:
-            st.button("➡ Lanjut ke Uji Tahanan Kontak", key="lanjut_pmcb", use_container_width=True)
+        if active_serial:
+            with st.expander("🗑️ Hapus Project "):
+                st.warning(
+                    f"Ini akan menghapus permanen semua data project **{active_serial}** "
+                    "(seluruh tab yang sudah diisi, termasuk foto lampiran). "
+                    "Tindakan ini tidak bisa dibatalkan."
+                )
+                confirm_delete = st.checkbox(
+                    f"Saya yakin ingin menghapus project '{active_serial}' secara permanen",
+                    key=f"confirm_delete_pmcb_{active_serial}",
+                )
+                if st.button(
+                    "🗑️ Hapus Sekarang",
+                    key=f"hapus_btn_pmcb_{active_serial}",
+                    type="primary",
+                    disabled=not confirm_delete,
+                    use_container_width=True,
+                ):
+                    delete_unit("pmcb", active_serial)
+                    st.success(f"Project '{active_serial}' telah dihapus.")
+                    st.rerun()
+        st.button("➡ Lanjut ke Uji Tahanan Kontak", key="lanjut_pmcb", use_container_width=True)
         card_end()
 
     # ==========================================================
@@ -483,6 +501,7 @@ def form_pmcb():
         )
         card_end()
         st.session_state["tes_fungsi_pmcb"] = hasil_fungsi
+        autosave_unit("pmcb", "tes_fungsi_pmcb", hasil_fungsi, tab_name="Tes Fungsi")
 
     # ==========================================================
     # TAB 8 - KETEBALAN COATING
@@ -538,6 +557,7 @@ def form_pmcb():
         )
         card_end()
         st.session_state["ketebalan_coating_pmcb"] = hasil_coating
+        autosave_unit("pmcb", "ketebalan_coating_pmcb", hasil_coating, tab_name="Ketebalan Coating")
 
     # ==========================================================
     # TAB 9 - UJI IP 55
@@ -617,6 +637,7 @@ def form_pmcb():
         )
         card_end()
         st.session_state["uji_ip55_pmcb"] = hasil_ip55_total
+        autosave_unit("pmcb", "uji_ip55_pmcb", hasil_ip55_total, tab_name="Uji IP 55")
 
     # ==========================================================
     # TAB 10 - LAMPIRAN / DOKUMENTASI
@@ -631,43 +652,71 @@ def form_pmcb():
         )
         st.caption("Upload foto dokumentasi unit PMCB")
 
+        info_state = get_active_unit_state("pmcb") or {}
+        nama_produk_lampiran = f"PMCB 4.0 — {info_state.get('info', {}).get('merk_vcb', '')} {info_state.get('info', {}).get('type_vcb', '')}".strip()
+        nomor_seri_lampiran = st.session_state.get("serial_vcb", info_state.get("info", {}).get("serial_vcb", ""))
+
+        # Foto yang sudah tersimpan sebelumnya untuk unit ini (dari autosave)
+        existing_lampiran = (info_state.get("lampiran_pmcb") or {}).get("foto", [])
+        existing_valid = [f for f in existing_lampiran if f.get("path") and Path(f["path"]).exists()]
+
+        if existing_valid:
+            st.markdown(f"**{len(existing_valid)} foto tersimpan sebelumnya**")
+            cols_e = st.columns(3)
+            for i, f in enumerate(existing_valid):
+                with cols_e[i % 3]:
+                    st.image(f["path"], use_container_width=True, caption=f.get("keterangan", f.get("file_name", "")))
+            thin_divider()
+
         uploaded_files = st.file_uploader(
-            "Upload Foto Dokumentasi (unit PMCB, label, kondisi panel, dsb.)",
+            "Upload Foto Dokumentasi baru (unit PMCB, label, kondisi panel, dsb.)",
             type=["png", "jpg", "jpeg"],
             accept_multiple_files=True,
             key="lampiran_upload_pmcb",
         )
-        
-        hasil_lampiran = []
-        
+
+        new_lampiran = []
         if uploaded_files:
-            st.markdown(f"**{len(uploaded_files)} foto berhasil diunggah**")
+            unit_dir = BASE_DIR / "uploads" / "pmcb" / (nomor_seri_lampiran or "tanpa_nomor_seri")
+            unit_dir.mkdir(parents=True, exist_ok=True)
+            st.markdown(f"**{len(uploaded_files)} foto baru diunggah**")
             thin_divider()
-            
+
             cols = st.columns(3)
             for i, file in enumerate(uploaded_files):
                 with cols[i % 3]:
-                    # Menampilkan preview gambar yang baru di-upload
                     st.image(file, use_container_width=True)
-                    
-                    # Input keterangan untuk gambar
                     keterangan = st.text_input(
-                        "Keterangan", 
-                        value=file.name, 
+                        "Keterangan",
+                        value=file.name,
                         key=f"lampiran_keterangan_pmcb_{i}"
                     )
-                    
-                    # Menyimpan objek file, nama, dan keterangan
-                    hasil_lampiran.append({
-                        "file_name": file.name,
-                        "keterangan": keterangan,
-                        "file_data": file # Menyimpan objek file agar bisa dipanggil lagi nanti
-                    })
-        else:
+                save_path = unit_dir / file.name
+                with open(save_path, "wb") as out_f:
+                    file.seek(0)
+                    out_f.write(file.getbuffer())
+                new_lampiran.append({
+                    "file_name": file.name,
+                    "keterangan": keterangan,
+                    "path": str(save_path),
+                })
+
+        # Gabungkan foto lama + foto baru (nama file sama akan ditimpa versi terbaru)
+        merged = {f["file_name"]: f for f in existing_valid}
+        for f in new_lampiran:
+            merged[f["file_name"]] = f
+        hasil_lampiran = list(merged.values())
+
+        if not hasil_lampiran:
             st.info("Belum ada foto yang diunggah")
-            
-        # Simpan seluruh data lampiran ke session state
-        st.session_state["lampiran_pmcb"] = hasil_lampiran
+
+        st.session_state["lampiran_pmcb"] = {
+            "nama_produk": nama_produk_lampiran,
+            "nomor_seri": nomor_seri_lampiran,
+            "foto": hasil_lampiran,
+        }
+        if get_active_serial("pmcb"):
+            autosave_unit("pmcb", "lampiran_pmcb", st.session_state["lampiran_pmcb"], tab_name="Dokumentasi")
         card_end()
 
     # ==========================================================
@@ -682,12 +731,16 @@ def form_pmcb():
             unsafe_allow_html=True,
         )
 
-        hasil_pengujian = st.radio("Hasil Pengujian", ["Diterima", "Ditolak"], horizontal=True, key="hasil_pengujian_pmcb")
+        hasil_pengujian = st.radio("Hasil Pengujian", ["diterima", "ditolak"], horizontal=True, key="hasil_pengujian_pmcb")
         catatan = st.text_area("Catatan", key="catatan_pmcb")
         thin_divider()
         c1, c2 = st.columns(2)
         with c1:
-            diperiksa_oleh = st.text_input("Diperiksa (Quality Control)", value="FAUZAN PRATAMA", key="diperiksa_pmcb")
+            diperiksa_oleh = st.text_input(
+                "Diperiksa (Quality Control)",
+                placeholder="Contoh: FAUZAN PRATAMA",
+                key="diperiksa_pmcb",
+            )
         with c2:
             tanggal_periksa = st.date_input("Tanggal Pemeriksaan", key="tanggal_periksa_pmcb")
         st.session_state["catatan_pengesahan_pmcb"] = {
@@ -696,7 +749,7 @@ def form_pmcb():
             "diperiksa_oleh": diperiksa_oleh,
         }
         autosave_unit("pmcb", "catatan_pengesahan_pmcb", st.session_state["catatan_pengesahan_pmcb"], tab_name="Catatan")
-        if hasil_pengujian == "Diterima":
+        if hasil_pengujian == "diterima":
             result_status(100.0, "🟢 Hasil Pengujian: DITERIMA")
         else:
             result_status(0.0, "", fail_msg="🔴 Hasil Pengujian: DITOLAK")
@@ -793,8 +846,17 @@ def form_pmcb():
                     st.caption(f"{len(export_units)} unit tersedia")
 
                 units_to_export = [u for u in export_units if u["info"].get("serial_vcb", u["info"].get("nomor_seri")) in selected_serials]
+
+                logo_path = _find_logo_pln()
+                if logo_path:
+                    st.caption(f"🖼️ Logo PLN terdeteksi: `{logo_path}`")
+                else:
+                    st.warning(
+                        "⚠️ Logo PLN tidak ditemukan. Letterhead PDF akan pakai teks 'PLN' saja. "
+                        f"Taruh file di: `{BASE_DIR / 'assets' / 'logo_pln.png'}`"
+                    )
+
                 if units_to_export and st.button("📄 Generate PDF", key="gen_pdf_pmcb", use_container_width=True, type="primary"):
-                    logo_path = BASE_DIR / "assets" / "logo_pln.png" if (BASE_DIR / "assets" / "logo_pln.png").exists() else (BASE_DIR / "logo_pln.png" if (BASE_DIR / "logo_pln.png").exists() else None)
                     pdf_bytes = build_pmcb_pdf(units_to_export, logo_path=str(logo_path) if logo_path else None)
                     filename = f"QC_PMCB_{'_'.join(selected_serials)}.pdf"
                     pdf_download_button(pdf_bytes, filename=filename, label="⬇ Download PDF Laporan")
